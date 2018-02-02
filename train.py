@@ -11,9 +11,10 @@ if CUDA:
     print("Using GPU optimizations!")
 
 OUTPUT_DIR = 'output'
-TRAINING_STEPS = 200000
+TRAINING_STEPS = 500000
 BATCH_SIZE = 64
-MODEL_DIMENSIONALITY = 64
+CRITIC_MODEL_DIMENSIONALITY = 64
+GENERATOR_MODEL_DIMENSIONALITY = 128
 CRITIC_UPDATES_PER_GENERATOR_UPDATE = 5
 LAMBDA = 10
 VISUALIZATION_INTERVAL = 1000
@@ -62,8 +63,8 @@ mnist = inf_mnist_train_gen()
 
 
 # ========== MODELS ==========
-generator = MNIST_GAN.Generator(input_size=NOISE_SAMPLE_LENGTH+NUM_CLASSES, output_size=784, dimensionality=MODEL_DIMENSIONALITY, cudaEnabled=CUDA)
-critic = MNIST_GAN.Critic(dimensionality=MODEL_DIMENSIONALITY, num_classes=NUM_CLASSES, cudaEnabled=CUDA)
+generator = MNIST_GAN.Generator(input_size=NOISE_SAMPLE_LENGTH+NUM_CLASSES, output_size=784, dimensionality=GENERATOR_MODEL_DIMENSIONALITY, cudaEnabled=CUDA)
+critic = MNIST_GAN.Critic(dimensionality=CRITIC_MODEL_DIMENSIONALITY, num_classes=NUM_CLASSES, cudaEnabled=CUDA)
 
 # ========= TRAINING =========
 logger = logger.Logger(OUTPUT_DIR)
