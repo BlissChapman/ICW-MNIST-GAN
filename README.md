@@ -1,2 +1,2 @@
-# ProbabilityDistGAN
-A simple generative adversarial network implemented via Keras to generate data from common probability distributions.
+# ICW-MNIST-GAN
+An improved conditional wasserstein generative adversarial network (ICW-GAN) that is trained on the MNIST dataset to generate handwritten digits.
