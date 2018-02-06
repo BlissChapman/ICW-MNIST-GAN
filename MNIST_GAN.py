@@ -13,6 +13,7 @@ class Generator(nn.Module):
         # output_size = input_size + (kernel_size - 1)
         self.fc_1 = nn.Linear(input_size, 4*16*16*dimensionality)
         self.deconv_1 = nn.ConvTranspose2d(4*dimensionality, 2*dimensionality, (5, 5))
+        self.bn_1 = nn.BatchNorm2d(2*dimensionality)
         self.deconv_2 = nn.ConvTranspose2d(2*dimensionality, dimensionality, (5, 5))
         self.deconv_3 = nn.ConvTranspose2d(dimensionality, 1, (5, 5))
 
@@ -35,6 +36,7 @@ class Generator(nn.Module):
         out = self.deconv_1(out)
         out = F.leaky_relu(out, inplace=True)
         out = F.dropout(out, 0.3)
+        out = self.bn_1(out)
 
         out = self.deconv_2(out)
         out = F.leaky_relu(out, inplace=True)
@@ -60,7 +62,9 @@ class Critic(nn.Module):
         super(Critic, self).__init__()
         # (W−F+2P)/S+1
         self.conv_1 = nn.Conv2d(1, dimensionality, (2, 2), stride=2)
+        self.bn_1 = nn.BatchNorm2d(dimensionality)
         self.conv_2 = nn.Conv2d(dimensionality, 2*dimensionality, (2, 2), stride=2)
+        self.bn_2 = nn.BatchNorm2d(2*dimensionality)
         self.conv_3 = nn.Conv2d(2*dimensionality, 4*dimensionality, (3, 3), stride=2)
         self.fc_1 = nn.Linear(3*3*4*dimensionality+num_classes, 1)
 
@@ -77,10 +81,12 @@ class Critic(nn.Module):
         out = self.conv_1(x)
         out = F.leaky_relu(out, inplace=True)
         out = F.dropout(out, 0.3)
+        out = self.bn_1(out)
 
         out = self.conv_2(out)
         out = F.leaky_relu(out, inplace=True)
         out = F.dropout(out, 0.3)
+        out = self.bn_2(out)
 
         out = self.conv_3(out)
         out = F.leaky_relu(out, inplace=True)
